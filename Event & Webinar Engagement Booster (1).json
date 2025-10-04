@@ -1,0 +1,462 @@
+{
+  "name": "Event & Webinar Engagement Booster",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        144
+      ],
+      "id": "42a4d6b0-b173-49bb-a3b9-5b95428aeafc",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ETDuDBsW4B9NgfHw",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        232,
+        144
+      ],
+      "id": "323b64ef-04af-405e-ac10-447cc6d77a63",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ETDuDBsW4B9NgfHw",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        232,
+        648
+      ],
+      "id": "0a81d85d-10ed-44ef-b22d-587942b9215d",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ETDuDBsW4B9NgfHw",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        224
+      ],
+      "id": "5ebf4c5b-fd69-465c-8ea8-34211042dab0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('data for the event').item.json.Email }}",
+        "subject": "Thank for joining our Recent webinar ",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        512,
+        424
+      ],
+      "id": "dd14e17b-edd0-45c9-a039-e26a92a723a4",
+      "name": "feedback message",
+      "webhookId": "1ea37783-ba81-40f4-ac9a-2e99b61336d5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SKB5PLWdhLq0ETu4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('data for the event').item.json.Email }}",
+        "subject": "=\"Reminder:{{ $('data for the event').item.json[\"Event Topic\"] }}",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        512,
+        24
+      ],
+      "id": "48958f88-a06f-43a0-a48c-dcc0359f5269",
+      "name": "remainder message",
+      "webhookId": "210f4a4e-a1b6-4ac7-9861-8115684344dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SKB5PLWdhLq0ETu4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Role:\nYou are an Email Engagement Assistant that writes professional and personalized customer emails for webinars.\n\nGoal:\nGenerate a well-structured email body only based on the workflow stage:\n\nPre-Event Reminder: Send a friendly reminder with event date, teaser, and encouragement to join.\n\nPost-Event Follow-Up: Send a thank you message, summarize value, and share feedback link.\n\nInput Variables:\n\nName → {{ $('data for the event').item.json.Name }}\n\nEmail → {{ $('data for the event').item.json.Email }}\n\nEvent Topic → {{ $('data for the event').item.json[\"Event Topic\"] }}\n\nInterests → {{ $('data for the event').item.json.Interests }}\n\nRegistered Date → {{ $('data for the event').item.json[\"Registered Date\"] }}\n\nEvent Date → {{ $('data for the event').item.json[\"Event Date\"] }}\n\nEvent Type → {{ $('data for the event').item.json[\"Event Type\"] }}\n\nEvent Link → {{ $('data for the event').item.json[\"Event Link\"] }}\n\nEvent Address → {{ $('data for the event').item.json[\"Event Address\"] }}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        -80
+      ],
+      "id": "bfd67092-409b-43b0-bf8d-7c1f7c8ed6cc",
+      "name": "Email"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Role:  \nYou are an Event Engagement Assistant that creates personalized pre-event messages for webinar attendees.\n\nGoal:  \nGenerate tailored reminder messages that increase attendee excitement and participation before the event.\n\nInstructions:  \nRead the input values:\n\nName: {{ $json[\"Name\"] }}  \nEvent Topic: {{ $json[\"Event Topic\"] }}  \nInterests: {{ $json[\"Interests\"] }}\n\nBased on these details, create two outputs:\n\n1. reminder_message → A friendly, personalized reminder mentioning the attendee’s name, the event topic, and how it connects to their interests.  \n2. content_preview → A short, engaging teaser sentence highlighting what they’ll learn or experience in the event.\n\nReturn the result strictly in this JSON format (no extra text or formatting):\n\n{\n  \"reminder_message\": \"...\",\n  \"content_preview\": \"...\"\n}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        -80
+      ],
+      "id": "dfb6d0a3-84ca-40bb-87eb-331ad0a6a4e9",
+      "name": "Event Engagement"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Role:  \nYou are an Email Engagement Assistant that writes short, friendly, and professional post-event follow-up emails for webinar attendees.\n\nGoal:  \nWrite a personalized follow-up email for {{ $json[\"Name\"] }} who attended the event.\n\nThe email should:  \n- Thank the attendee for joining.  \n- Highlight one valuable resource from {{ $json[\"Resource Link\"] }}.  \n- Encourage them to share feedback using {{ $json[\"Feedback Link\"] }}.  \n\nInstructions:  \n- Use the attendee’s name in the greeting.  \n- Keep the tone warm, concise, and engaging.  \n- Structure the email as follows:  \n  1. Greeting with their name.  \n  2. Thank you and appreciation.  \n  3. Highlight of one key resource with link.  \n  4. Feedback request with link.  \n  5. Simple closing (no company or team name).  \n\nOutput Format:  \nOnly return the email body as plain text (no JSON, no special characters, no subject line).\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        424
+      ],
+      "id": "dcb3b607-6984-4b24-a57f-7c2102bf1a9f",
+      "name": "Feedback email"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yHQFWbsQbWT-rDLLI1ZyufkhsFrnlti6-uS6KfmiQBk",
+          "mode": "list",
+          "cachedResultName": "Event data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yHQFWbsQbWT-rDLLI1ZyufkhsFrnlti6-uS6KfmiQBk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yHQFWbsQbWT-rDLLI1ZyufkhsFrnlti6-uS6KfmiQBk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -864,
+        224
+      ],
+      "id": "919c5a47-8188-4eed-b754-9d1831edb213",
+      "name": "data for the event",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Wi56Vgn7tEhfO9FI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "caf34844-d24d-47e4-ad14-771bcedf90ab",
+              "leftValue": "={{ $json[\"Event Date\"] }}",
+              "rightValue": "={{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        424
+      ],
+      "id": "0c0b75cc-c45b-4bcf-ade6-0dbe66086f88",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst updatedItems = items.map((item) => {\n  const eventDate = new Date(item.json[\"Event Date\"]);\n  const today = new Date();\n  today.setHours(0, 0, 0, 0);\n  eventDate.setHours(0, 0, 0, 0);\n\n  // Calculate difference in days\n  const diffDays = Math.floor((eventDate - today) / (1000 * 60 * 60 * 24));\n\n  if (diffDays === 1) {\n    // 1 day before → Reminder\n    item.json.status = \"reminder\";\n  } else if (diffDays <= 0) {\n    // Same day or past → Feedback\n    item.json.status = \"feedback\";\n  } else {\n    // Too early → Ignore\n    item.json.status = \"ignore\";\n  }\n  return item;\n});\n\nreturn updatedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        224
+      ],
+      "id": "dd26e8f8-9b56-4c6c-9e2a-8ccb470b4576",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "reminder",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "34c9ebab-0a6c-41f9-b538-edb560c2dee0"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "da3acb57-a499-4d26-999d-a55528370e16",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "feedback",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -416,
+        224
+      ],
+      "id": "dac940ef-20fa-48e7-a7e0-a5cc3445f946",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Event Engagement",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Feedback email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "data for the event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remainder message": {
+      "main": [
+        []
+      ]
+    },
+    "Email": {
+      "main": [
+        [
+          {
+            "node": "remainder message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event Engagement": {
+      "main": [
+        [
+          {
+            "node": "Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Feedback email": {
+      "main": [
+        [
+          {
+            "node": "feedback message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "data for the event": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Feedback email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Event Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9881af63-4d1d-41b2-ad0d-77ae8a5b4e34",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abe57ca6e9cbd2512b4f0b7e25d06057df4d1b3aca7e2f9ed5daad66e28a903"
+  },
+  "id": "Nb8cfi4VkvQQuZls",
+  "tags": []
+}
