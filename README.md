@@ -63,6 +63,9 @@ flowchart TD
     F --> G[📧 Gmail / WhatsApp / Discord Delivery]
 
 
+
+```
+````
 ### **Step-by-Step Process**
 
 1️⃣ **Trigger:**
@@ -145,7 +148,7 @@ Thanks for being part of our event community!
 | Priya   | [priya@email.com](mailto:priya@email.com)                       | Data Analytics Trends  | BI Tools, Dashboards  | 2025-10-12 | bit.ly/da-trends    | bit.ly/da-feedback    |
 
 ---
-
+```
 ## 🧰 What I Learned
 
 1️⃣ **Agent orchestration** is more challenging than creating a single AI task.
