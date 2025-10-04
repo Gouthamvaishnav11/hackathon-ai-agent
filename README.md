@@ -120,8 +120,11 @@ Thanks for being part of our event community!
 ## 🧩 Tech Stack
 
 <img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/70922358-3f84-4be1-9ee8-e9903c8e20ba" />
+
 <img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/a332f22d-6032-4d79-b83b-c534a5528d59" />
+
 <img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/d01b89c9-b885-4633-8391-bc54ed1fc395" />
+
 <img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/a909e6eb-bdcc-4eb9-80fe-3a7bb1545b79" />
 
 
